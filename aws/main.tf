@@ -220,17 +220,17 @@ resource "aws_s3_bucket_acl" "example" {
 
 
 provider "aws" {
-  alias  = "us-east-1"
-  region = "us-east-1"
+  alias  = "us-east-2"
+  region = "us-east-2"
 }
 
 provider "aws" {
-  alias  = "us-west-2"
-  region = "us-west-2"
+  alias  = "us-west-1"
+  region = "us-west-1"
 }
 
-resource "aws_dynamodb_table" "us-east-1" {
-  provider = aws.us-east-1
+resource "aws_dynamodb_table" "us-east-2" {
+  provider = aws.us-east-2
 
   hash_key         = "UserId"
   name             = "udacity-vishwash-dhiman-aws-dynamodb"
@@ -245,8 +245,8 @@ resource "aws_dynamodb_table" "us-east-1" {
   }
 }
 
-resource "aws_dynamodb_table" "us-west-2" {
-  provider = aws.us-west-2
+resource "aws_dynamodb_table" "us-west-1" {
+  provider = aws.us-west-1
 
   hash_key         = "UserId"
   name             = "udacity-vishwash-dhiman-aws-dynamodb"
@@ -263,18 +263,18 @@ resource "aws_dynamodb_table" "us-west-2" {
 
 resource "aws_dynamodb_global_table" "udacity-vishwash-dhiman-aws-dynamodb" {
   depends_on = [
-    aws_dynamodb_table.us-east-1,
-    aws_dynamodb_table.us-west-2,
+    aws_dynamodb_table.us-east-2,
+    aws_dynamodb_table.us-west-1,
   ]
-  provider = aws.us-east-1
+  provider = aws.us-east-2
 
   name = "udacity-vishwash-dhiman-aws-dynamodb"
 
   replica {
-    region_name = "us-east-1"
+    region_name = "us-east-2"
   }
 
   replica {
-    region_name = "us-west-2"
+    region_name = "us-west-1"
   }
 }
