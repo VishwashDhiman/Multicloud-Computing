@@ -1,5 +1,6 @@
 data "azurerm_resource_group" "udacity" {
   name     = "Regroup_4wV_hjh3mMr"
+  location = "West US"
 }
 
 resource "azurerm_container_group" "udacity" {
@@ -12,7 +13,7 @@ resource "azurerm_container_group" "udacity" {
 
   container {
     name   = "azure-container-app"
-    image  = "docker.io/vishwash/azure_app:1.0"
+    image  = "docker.io/vishwashdhiman/azure_app:1.0"
     cpu    = "0.5"
     memory = "1.5"
     environment_variables = {
