@@ -218,63 +218,46 @@ resource "aws_s3_bucket_acl" "example" {
   acl    = "private"
 }
 
-
-provider "aws" {
-  alias  = "us-east-2"
-  region = "us-east-2"
-}
-
-provider "aws" {
-  alias  = "us-west-1"
-  region = "us-west-1"
-}
-
-resource "aws_dynamodb_table" "us-east-2" {
-  provider = aws.us-east-2
-
-  hash_key         = "UserId"
-  name             = "udacity-vishwash-dhiman-aws-dynamodb"
-  stream_enabled   = true
-  stream_view_type = "NEW_AND_OLD_IMAGES"
-  read_capacity    = 1
-  write_capacity   = 1
+resource "aws_dynamodb_table" "udacity-vishwash-dhiman-aws-dynamodb" {
+  name           = "udacity-vishwash-dhiman-aws-dynamodb"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 20
+  write_capacity = 20
+  hash_key       = "UserId"
+  range_key      = "GameTitle"
 
   attribute {
     name = "UserId"
     type = "S"
   }
-}
-
-resource "aws_dynamodb_table" "us-west-1" {
-  provider = aws.us-west-1
-
-  hash_key         = "UserId"
-  name             = "udacity-vishwash-dhiman-aws-dynamodb"
-  stream_enabled   = true
-  stream_view_type = "NEW_AND_OLD_IMAGES"
-  read_capacity    = 1
-  write_capacity   = 1
 
   attribute {
-    name = "UserId"
+    name = "GameTitle"
     type = "S"
   }
-}
 
-resource "aws_dynamodb_global_table" "udacity-vishwash-dhiman-aws-dynamodb" {
-  depends_on = [
-    aws_dynamodb_table.us-east-2,
-    aws_dynamodb_table.us-west-1,
-  ]
-  provider = aws.us-east-2
-
-  name = "udacity-vishwash-dhiman-aws-dynamodb"
-
-  replica {
-    region_name = "us-east-2"
+  attribute {
+    name = "TopScore"
+    type = "N"
   }
 
-  replica {
-    region_name = "us-west-1"
+  ttl {
+    attribute_name = "TimeToExist"
+    enabled        = false
+  }
+
+  global_secondary_index {
+    name               = "GameTitleIndex"
+    hash_key           = "GameTitle"
+    range_key          = "TopScore"
+    write_capacity     = 10
+    read_capacity      = 10
+    projection_type    = "INCLUDE"
+    non_key_attributes = ["UserId"]
+  }
+
+  tags = {
+    Name        = "udacity-vishwash-dhiman-aws-dynamodb"
+    Environment = "production"
   }
 }

@@ -31,15 +31,6 @@ resource "azurerm_container_group" "udacity" {
 }
 
 ####### Your Additions Will Start Here ######
-
-resource "azurerm_storage_account" "udacity" {
-  name                     = "udacitydhimanstorage"
-  resource_group_name      = data.azurerm_resource_group.udacity.name
-  location                 = data.azurerm_resource_group.udacity.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-}
-
 resource "azurerm_sql_server" "udacity" {
   name                         = "udacity-vishwash-dhiman-azure-sql"
   resource_group_name          = data.azurerm_resource_group.udacity.name
@@ -77,11 +68,5 @@ resource "azurerm_app_service" "udacity" {
 
   app_settings = {
     "SOME_KEY" = "some-value"
-  }
-
-  connection_string {
-    name  = "Database"
-    type  = "SQLServer"
-    value = "Server=some-server.mydomain.com;Integrated Security=SSPI"
   }
 }
